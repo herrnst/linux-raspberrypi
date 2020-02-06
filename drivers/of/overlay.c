@@ -260,6 +260,9 @@ static struct property *dup_and_fixup_symbol_prop(
 	if (target_path_len == 1 && target_path[0] == '/' && path_tail_len)
 		target_path_len = 0;
 
+	if (!strcmp(target_path, "/"))
+		target_path_len = 0;
+
 	new_prop = kzalloc_obj(*new_prop);
 	if (!new_prop)
 		goto err_free_target_path;
