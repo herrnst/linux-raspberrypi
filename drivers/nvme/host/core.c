@@ -2471,9 +2471,12 @@ static int nvme_update_ns_info_block(struct nvme_ns *ns,
 				 "not enabling zoned mode");
 	}
 
-	if ((ns->ctrl->vwc & NVME_CTRL_VWC_PRESENT) && !info->no_vwc)
+	if ((ns->ctrl->vwc & NVME_CTRL_VWC_PRESENT) && !info->no_vwc) {
 		lim.features |= BLK_FEAT_WRITE_CACHE | BLK_FEAT_FUA;
-	else
+		if(ns->ctrl->quirks & NVME_QUIRK_NO_FUA) {
+			lim.features &= ~ BLK_FEAT_FUA;
+		}
+	} else
 		lim.features &= ~(BLK_FEAT_WRITE_CACHE | BLK_FEAT_FUA);
 
 	if (info->is_rotational)
